@@ -406,18 +406,10 @@
     <div class="marquee" id="mq">
     <div class="mtrack" id="mtrack">
       <!--
-        COMO COLOCAR OS PRINTS:
-        1. Crie uma pasta chamada "feedbacks" ao lado deste arquivo HTML.
-        2. Salve os prints como feedback-1.jpg, feedback-2.jpg ... feedback-6.jpg
-        3. Pronto: eles aparecem sozinhos. Enquanto não existirem, aparece o espaço tracejado.
-        Para mais prints, copie uma linha <figure> e mude o número.
+        OS PRINTS ENTRAM SOZINHOS:
+        Envie os arquivos como feedback-1, feedback-2, feedback-3... (jpg, jpeg, png ou webp),
+        na pasta principal OU dentro de uma pasta "feedbacks". A página encontra todos, em ordem.
       -->
-      <figure class="shot" data-ph="h1"><img src="feedbacks/feedback-1.jpg" alt="Feedback de cliente aprovado #1"></figure>
-      <figure class="shot" data-ph="h2"><img src="feedbacks/feedback-2.jpg" alt="Feedback de cliente aprovado #2"></figure>
-      <figure class="shot" data-ph="h3"><img src="feedbacks/feedback-3.jpg" alt="Feedback de cliente aprovado #3"></figure>
-      <figure class="shot" data-ph="h2"><img src="feedbacks/feedback-4.jpg" alt="Feedback de cliente aprovado #4"></figure>
-      <figure class="shot" data-ph="h1"><img src="feedbacks/feedback-5.jpg" alt="Feedback de cliente aprovado #5"></figure>
-      <figure class="shot" data-ph="h3"><img src="feedbacks/feedback-6.jpg" alt="Feedback de cliente aprovado #6"></figure>
     </div>
     </div>
     <p class="disclaimer">Feedbacks reais de clientes. Resultados variam de pessoa para pessoa.</p>
@@ -429,7 +421,7 @@
   <div class="wrap">
     <div class="photo">
       <!-- Foto: salve como "foto-perfil" (.jpg, .png ou .webp) na mesma pasta deste HTML, de preferência vertical (4:5) -->
-      <img src="foto-perfil.jpg" alt="Foto da Mari, enfermeira e consultora de carreira" data-ph="photo">
+      <img src="foto-perfil.jpg" alt="Foto da Mari, enfermeira e consultora de carreira">
     </div>
     <div>
       <span class="eyebrow">Quem faz</span>
@@ -481,51 +473,65 @@
 
 <footer>© Currículo de Impacto · Todos os direitos reservados <!-- AJUSTE: CNPJ / contato --></footer>
 <script>
-  // 1) Imagens: tenta jpg, jpeg, png, webp (maiúsculo ou minúsculo) antes de mostrar o espaço tracejado
   const EXTS=['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP'];
-  function resolveImg(img){
+
+  // Tenta carregar a primeira URL que existir da lista; devolve a URL ou null
+  function firstExisting(urls){
     return new Promise(done=>{
-      const host=img.closest('[data-ph]')||img;
-      const ph=host.dataset.ph||img.dataset.ph;
-      const base=img.getAttribute('src').replace(/\.[a-z]+$/i,'');
-      let i=0;
-      const swap=()=>{
-        if(ph!=='photo'){ host.remove(); done(); return; } // feedback que não existe: some do carrossel
-        const d=document.createElement('div');
-        d.className='slot '+(ph==='photo'?'':ph);
-        d.innerHTML=ph==='photo'?'<b>Sua foto aqui</b>foto-perfil.jpg · vertical 4:5':'<b>Print do feedback</b>'+base+'.jpg';
-        host.replaceWith(d); done();
-      };
-      const next=()=>{ i++; if(i<EXTS.length) img.src=base+'.'+EXTS[i]; else swap(); };
-      img.addEventListener('load',()=>{ if(img.naturalWidth>0) done(); });
-      img.addEventListener('error',next);
-      if(img.complete) { img.naturalWidth>0 ? done() : next(); }
+      let i=0; const img=new Image();
+      img.onload=()=>done(urls[i]);
+      img.onerror=()=>{ i++; i<urls.length ? img.src=urls[i] : done(null); };
+      img.src=urls[0];
     });
   }
-  const imgs=[...document.querySelectorAll('img[data-ph], [data-ph] img')];
-  Promise.all(imgs.map(resolveImg)).then(startCarousel);
+  const variants=base=>EXTS.map(e=>base+'.'+e);
 
-  // 2) Carrossel: passa sozinho para o lado, pausa ao passar o mouse ou tocar, e dá para arrastar
+  // 1) Foto de perfil
+  async function loadPhoto(){
+    const img=document.querySelector('.photo img'); if(!img) return;
+    const url=await firstExisting(variants('foto-perfil'));
+    if(url){ img.src=url; return; }
+    const d=document.createElement('div'); d.className='slot';
+    d.innerHTML='<b>Sua foto aqui</b>foto-perfil.jpg · vertical 4:5'; img.replaceWith(d);
+  }
+
+  // 2) Feedbacks: procura feedback-1, feedback-2... na pasta principal e em feedbacks/
+  async function loadFeedbacks(){
+    const track=document.getElementById('mtrack'); if(!track) return [];
+    const found=[]; let misses=0;
+    for(let n=1; n<=60 && misses<3; n++){
+      const url=await firstExisting([...variants('feedbacks/feedback-'+n), ...variants('feedback-'+n)]);
+      if(url){ found.push(url); misses=0; } else misses++;
+    }
+    found.forEach((url,i)=>{
+      const f=document.createElement('figure'); f.className='shot';
+      const img=document.createElement('img'); img.src=url; img.alt='Feedback de cliente aprovado #'+(i+1);
+      f.appendChild(img); track.appendChild(f);
+    });
+    if(!found.length) track.innerHTML='<div class="slot"><b>Prints dos feedbacks</b>feedback-1.jpg, feedback-2.jpg…</div>';
+    return found;
+  }
+
+  loadPhoto();
+  loadFeedbacks().then(found=>{ if(found.length) startCarousel(); });
+
+  // 3) Carrossel: passa sozinho, pausa no mouse/toque, dá para arrastar
   function startCarousel(){
     const mq=document.getElementById('mq'), track=document.getElementById('mtrack');
-    if(!mq||!track) return;
     if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const items=[...track.children].filter(el=>el.tagName==='FIGURE');
-    if(!items.length){ track.innerHTML='<div class="slot"><b>Prints dos feedbacks</b>pasta feedbacks/</div>'; return; }
-    items.forEach(el=>{ const c=el.cloneNode(true); c.setAttribute('aria-hidden','true'); track.appendChild(c); });
+    [...track.children].forEach(el=>{ const c=el.cloneNode(true); c.setAttribute('aria-hidden','true'); track.appendChild(c); });
     const SPEED=0.5; // pixels por quadro: aumente para passar mais rápido
     let paused=false, resumeT, pos=mq.scrollLeft;
     const pause=()=>{ paused=true; clearTimeout(resumeT); };
-    const resume=(ms)=>{ clearTimeout(resumeT); resumeT=setTimeout(()=>{ paused=false; pos=mq.scrollLeft; }, ms); };
+    const resume=ms=>{ clearTimeout(resumeT); resumeT=setTimeout(()=>{ paused=false; pos=mq.scrollLeft; }, ms); };
     mq.addEventListener('mouseenter',pause); mq.addEventListener('mouseleave',()=>resume(300));
     mq.addEventListener('touchstart',pause,{passive:true}); mq.addEventListener('touchend',()=>resume(2500));
-    function tick(){
+    (function tick(){
       const half=track.scrollWidth/2;
       if(!paused){ pos+=SPEED; if(pos>=half) pos-=half; mq.scrollLeft=pos; }
       else if(mq.scrollLeft>=half){ mq.scrollLeft-=half; }
       requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
+    })();
   }
 </script>
 </body>
