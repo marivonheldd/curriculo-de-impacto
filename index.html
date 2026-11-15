@@ -108,11 +108,12 @@
   .marquee{margin-top:48px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
   .marquee::-webkit-scrollbar{display:none}
-  .mtrack{display:flex;gap:20px;width:max-content;padding:10px 0 24px}
-  .mtrack .shot,.mtrack .slot{flex:none;height:440px;margin:0}
-  .mtrack .shot img{height:100%;width:auto;max-width:none;display:block}
-  .mtrack .slot{width:260px}
-  @media (max-width:600px){.mtrack .shot,.mtrack .slot{height:360px}.mtrack .slot{width:210px}}
+  .mtrack{display:flex;align-items:center;gap:20px;width:max-content;padding:10px 0 24px;min-height:200px}
+  .mtrack .shot,.mtrack .slot{flex:none;margin:0}
+  /* Cada print aparece no tamanho real; só diminui se for maior que o limite (nunca amplia) */
+  .mtrack .shot img{display:block;width:auto;height:auto;max-width:min(800px,85vw);max-height:440px}
+  .mtrack .slot{width:260px;height:300px}
+  @media (max-width:600px){.mtrack .shot img{max-height:360px}.mtrack .slot{width:210px;height:260px}}
   .slot,.shot{break-inside:avoid;margin-bottom:20px;border-radius:var(--r);overflow:hidden}
   .shot{background:var(--white);border:1px solid var(--line);box-shadow:0 14px 30px -18px rgba(10,9,8,.3)}
   .slot{border:2px dashed var(--sand);background:rgba(169,146,125,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:14px;padding:20px}
