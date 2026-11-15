@@ -104,6 +104,15 @@
   /* 5 PROVA SOCIAL */
   .proof .head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap}
   .pgrid{columns:3 280px;column-gap:20px;margin-top:48px}
+  /* Carrossel automático dos feedbacks */
+  .marquee{margin-top:48px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+  .marquee::-webkit-scrollbar{display:none}
+  .mtrack{display:flex;gap:20px;width:max-content;padding:10px 0 24px}
+  .mtrack .shot,.mtrack .slot{flex:none;height:440px;margin:0}
+  .mtrack .shot img{height:100%;width:auto;max-width:none;display:block}
+  .mtrack .slot{width:260px}
+  @media (max-width:600px){.mtrack .shot,.mtrack .slot{height:360px}.mtrack .slot{width:210px}}
   .slot,.shot{break-inside:avoid;margin-bottom:20px;border-radius:var(--r);overflow:hidden}
   .shot{background:var(--white);border:1px solid var(--line);box-shadow:0 14px 30px -18px rgba(10,9,8,.3)}
   .slot{border:2px dashed var(--sand);background:rgba(169,146,125,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:14px;padding:20px}
@@ -254,7 +263,7 @@
         <div class="price"><sup>R$</sup>197</div>
         <p class="price-sub">Pagamento único · acesso imediato à consultoria</p>
         <!-- AJUSTE: link do checkout -->
-        <a class="btn" href="LINK_DO_CHECKOUT">Garantir meu Currículo de Impacto
+        <a class="btn" href="https://pay.kiwify.com.br/sCqALdS">Garantir meu Currículo de Impacto
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         <div class="seals">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pagamento 100% seguro</span>
@@ -392,9 +401,10 @@
         <span class="eyebrow">Quem já fez</span>
         <h2>Aprovados, chamados e contratados.</h2>
       </div>
-      <a class="btn" href="#oferta">Quero ser o próximo</a>
+      <a class="btn" href="https://pay.kiwify.com.br/sCqALdS">Quero ser o próximo</a>
     </div>
-    <div class="pgrid">
+    <div class="marquee" id="mq">
+    <div class="mtrack" id="mtrack">
       <!--
         COMO COLOCAR OS PRINTS:
         1. Crie uma pasta chamada "feedbacks" ao lado deste arquivo HTML.
@@ -409,28 +419,29 @@
       <figure class="shot" data-ph="h1"><img src="feedbacks/feedback-5.jpg" alt="Feedback de cliente aprovado #5"></figure>
       <figure class="shot" data-ph="h3"><img src="feedbacks/feedback-6.jpg" alt="Feedback de cliente aprovado #6"></figure>
     </div>
+    </div>
     <p class="disclaimer">Feedbacks reais de clientes. Resultados variam de pessoa para pessoa.</p>
   </div>
 </section>
 
-<!-- QUEM FAZ · AJUSTE: troque os textos entre colchetes pela sua história -->
+<!-- QUEM FAZ -->
 <section class="about">
   <div class="wrap">
     <div class="photo">
-      <!-- Salve sua foto como "foto-perfil.jpg" na mesma pasta deste HTML (vertical, 4:5) -->
-      <img src="foto-perfil.jpg" alt="Foto de [Seu nome]" data-ph="photo">
+      <!-- Foto: salve como "foto-perfil" (.jpg, .png ou .webp) na mesma pasta deste HTML, de preferência vertical (4:5) -->
+      <img src="foto-perfil.jpg" alt="Foto da Mari, enfermeira e consultora de carreira" data-ph="photo">
     </div>
     <div>
       <span class="eyebrow">Quem faz</span>
-      <h2>Prazer, eu sou [Seu nome].</h2>
-      <p class="role">[Sua formação ou cargo · ex.: Enfermeira e consultora de carreira]</p>
-      <p class="txt">[Conte em 2 ou 3 frases por que você faz isso. Ex.: Eu também já fui a recém-formada que mandava currículo para todo lado e não recebia resposta. Quando entendi como funciona a triagem por trás das vagas, tudo mudou.]</p>
-      <p class="txt">[O que te dá autoridade. Ex.: Hoje ajudo profissionais da saúde a se apresentarem ao mercado com estratégia, e não com sorte.]</p>
+      <h2>Prazer, eu sou a Mari.</h2>
+      <p class="role">Enfermeira, concursada e consultora de carreira</p>
+      <p class="txt">Sou enfermeira formada pela UFRJ. Ainda na graduação, aprendi algo que nenhuma disciplina ensinava: um bom currículo abre portas. Foi com ele que conquistei estágios, oportunidades e, depois de formada, uma vaga numa empresa canadense, além de outras oportunidades CLT.</p>
+      <p class="txt">Hoje uso essa experiência para ajudar profissionais a se recolocarem de forma inteligente e estratégica, para que o tempo entre o diploma e a próxima vaga seja o menor possível.</p>
       <ul class="creds">
-        <li><b>[+000]</b>currículos reestruturados</li>
-        <li><b>[00 anos]</b>de experiência na área</li>
-        <li><b>[Saúde]</b>área de especialidade</li>
-        <li><b>[Formação]</b>[sua graduação / certificação]</li>
+        <li><b>+500</b>currículos feitos</li>
+        <li><b>+5 anos</b>de experiência</li>
+        <li><b>UFRJ</b>graduação em Enfermagem</li>
+        <li><b>Concursada</b>enfermeira no serviço público</li>
       </ul>
     </div>
   </div>
@@ -463,26 +474,59 @@
 <section class="final">
   <div class="wrap">
     <h2>Seu diploma já fez a parte dele. Agora é a vez do seu currículo.</h2>
-    <a class="btn" href="#oferta">Quero meu Currículo de Impacto</a>
+    <a class="btn" href="https://pay.kiwify.com.br/sCqALdS">Quero meu Currículo de Impacto</a>
     <p class="micro">R$ 197 · pagamento único · garantia de 7 dias</p>
   </div>
 </section>
 
 <footer>© Currículo de Impacto · Todos os direitos reservados <!-- AJUSTE: CNPJ / contato --></footer>
 <script>
-  // Se a imagem ainda não existir, mostra o espaço tracejado no lugar
-  document.querySelectorAll('img[src]').forEach(img=>{
-    const host=img.closest('[data-ph]')||img;
-    const ph=host.dataset.ph||img.dataset.ph;
-    if(!ph) return;
-    const swap=()=>{
-      const d=document.createElement('div');
-      d.className='slot '+(ph==='photo'?'':ph);
-      d.innerHTML=ph==='photo'?'<b>Sua foto aqui</b>foto-perfil.jpg · vertical 4:5':'<b>Print do feedback</b>'+img.getAttribute('src');
-      host.replaceWith(d);
-    };
-    if(img.complete && img.naturalWidth===0) swap(); else img.addEventListener('error',swap);
-  });
+  // 1) Imagens: tenta jpg, jpeg, png, webp (maiúsculo ou minúsculo) antes de mostrar o espaço tracejado
+  const EXTS=['jpg','jpeg','png','webp','JPG','JPEG','PNG','WEBP'];
+  function resolveImg(img){
+    return new Promise(done=>{
+      const host=img.closest('[data-ph]')||img;
+      const ph=host.dataset.ph||img.dataset.ph;
+      const base=img.getAttribute('src').replace(/\.[a-z]+$/i,'');
+      let i=0;
+      const swap=()=>{
+        if(ph!=='photo'){ host.remove(); done(); return; } // feedback que não existe: some do carrossel
+        const d=document.createElement('div');
+        d.className='slot '+(ph==='photo'?'':ph);
+        d.innerHTML=ph==='photo'?'<b>Sua foto aqui</b>foto-perfil.jpg · vertical 4:5':'<b>Print do feedback</b>'+base+'.jpg';
+        host.replaceWith(d); done();
+      };
+      const next=()=>{ i++; if(i<EXTS.length) img.src=base+'.'+EXTS[i]; else swap(); };
+      img.addEventListener('load',()=>{ if(img.naturalWidth>0) done(); });
+      img.addEventListener('error',next);
+      if(img.complete) { img.naturalWidth>0 ? done() : next(); }
+    });
+  }
+  const imgs=[...document.querySelectorAll('img[data-ph], [data-ph] img')];
+  Promise.all(imgs.map(resolveImg)).then(startCarousel);
+
+  // 2) Carrossel: passa sozinho para o lado, pausa ao passar o mouse ou tocar, e dá para arrastar
+  function startCarousel(){
+    const mq=document.getElementById('mq'), track=document.getElementById('mtrack');
+    if(!mq||!track) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const items=[...track.children].filter(el=>el.tagName==='FIGURE');
+    if(!items.length){ track.innerHTML='<div class="slot"><b>Prints dos feedbacks</b>pasta feedbacks/</div>'; return; }
+    items.forEach(el=>{ const c=el.cloneNode(true); c.setAttribute('aria-hidden','true'); track.appendChild(c); });
+    const SPEED=0.5; // pixels por quadro: aumente para passar mais rápido
+    let paused=false, resumeT, pos=mq.scrollLeft;
+    const pause=()=>{ paused=true; clearTimeout(resumeT); };
+    const resume=(ms)=>{ clearTimeout(resumeT); resumeT=setTimeout(()=>{ paused=false; pos=mq.scrollLeft; }, ms); };
+    mq.addEventListener('mouseenter',pause); mq.addEventListener('mouseleave',()=>resume(300));
+    mq.addEventListener('touchstart',pause,{passive:true}); mq.addEventListener('touchend',()=>resume(2500));
+    function tick(){
+      const half=track.scrollWidth/2;
+      if(!paused){ pos+=SPEED; if(pos>=half) pos-=half; mq.scrollLeft=pos; }
+      else if(mq.scrollLeft>=half){ mq.scrollLeft-=half; }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
 </script>
 </body>
 </html>
